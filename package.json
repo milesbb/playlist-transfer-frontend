@@ -6,6 +6,7 @@
   "homepage": "https://milesbb.github.io/playlist-transfer-frontend/",
   "scripts": {
     "dev": "vite",
+    "clean": "rm -rf dist",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
