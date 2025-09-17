@@ -1,5 +1,7 @@
 # Playlist Transfer Frontend
 
+[Try the mock-up here!](milesbb.github.io/playlist-transfer-frontend)
+
 ![croppedwebimg](https://github.com/user-attachments/assets/f943f917-311f-4079-8a33-58412443b4c8)
 
 This repository contains the **frontend** for the Playlist Transfer website, built using **React**, **Vite**, and **Tailwind CSS**.
