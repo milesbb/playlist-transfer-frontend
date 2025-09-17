@@ -1,6 +1,6 @@
 # Playlist Transfer Frontend
 
-This repository contains the **frontend** for the Playlist Transfer website, built using **React**.
+This repository contains the **frontend** for the Playlist Transfer website, built using **React**, **Vite**, and **Tailwind CSS**.
 
 The project's main goal is to make it easy for people to archive and transfer their music playlists between apps/providers. Down with the walls between music providers!
 
