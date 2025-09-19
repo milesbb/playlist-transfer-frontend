@@ -1,4 +1,10 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
@@ -27,8 +33,22 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [accessToken, setAccessTokenState] = useState<string | null>(() =>
+    sessionStorage.getItem("accessToken")
+  );
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (accessToken) {
+      sessionStorage.setItem("accessToken", accessToken);
+    } else {
+      sessionStorage.removeItem("accessToken");
+    }
+  }, [accessToken]);
+
+  const setAccessToken = (token: string | null) => {
+    setAccessTokenState(token);
+  };
 
   const login = async ({
     email,
@@ -60,7 +80,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         toast.error(data.message);
       } else {
         setAccessToken(data.accessToken);
-
         toast.success("Logged in successfully!");
         navigate("/dashboard");
       }
@@ -134,7 +153,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       toast.success(
         `Logged out successfully. Come back soon ${meData.username}!`
       );
-      navigate("/login");
+      navigate("/");
     } catch (err: any) {
       toast.error(err.message || "Logout failed");
       setAccessToken(null);

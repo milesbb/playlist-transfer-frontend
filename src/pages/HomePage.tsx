@@ -2,9 +2,18 @@ import { useNavigate } from "react-router-dom";
 import "./HomePage.css";
 import animation from "../assets/cropped_landing_page_dog.gif";
 import title from "../assets/title_light.png";
+import { useEffect } from "react";
 
 function HomePage() {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = sessionStorage.getItem("accessToken");
+    if (token) {
+      navigate("/dashboard");
+    }
+  }, [navigate]);
+
   return (
     <>
       <div className="flex flex-col items-center justify-center h-screen ">
