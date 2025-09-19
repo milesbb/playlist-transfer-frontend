@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { checkAndRefreshTokenOnLanding } from "./apiInteraction/apiFetch";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
+import ProfilePage from "./pages/ProfilePage";
 
 function App() {
   const navigate = useNavigate();
@@ -33,6 +34,14 @@ function App() {
         element={
           <ProtectedRoute>
             <DashboardPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <ProfilePage />
           </ProtectedRoute>
         }
       />
