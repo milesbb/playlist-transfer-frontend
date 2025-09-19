@@ -53,13 +53,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         }),
       });
 
-      if (!res.ok) throw new Error("Invalid credentials");
+      const data = await res.json();
 
-      const data: { accessToken: string } = await res.json();
-      setAccessToken(data.accessToken);
+      if (!res.ok) {
+        console.log(data);
+        toast.error(data.message);
+      } else {
+        setAccessToken(data.accessToken);
 
-      toast.success("Logged in successfully!");
-      navigate("/dashboard");
+        toast.success("Logged in successfully!");
+        navigate("/dashboard");
+      }
     } catch (err: any) {
       toast.error(err.message || "Login failed");
       throw err;
@@ -103,7 +107,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         return;
       }
 
-      const meRes = await fetch(`${API_URL}/v1/me`, {
+      const meRes = await fetch(`${API_URL}/v1/users/me`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -112,24 +116,28 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
       if (!meRes.ok) throw new Error("Failed to fetch user info");
 
-      const meData: { userId: string } = await meRes.json();
+      const meData: { id: string; username: string } = await meRes.json();
 
       const logoutRes = await fetch(`${API_URL}/v1/users/logout`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
         credentials: "include",
-        body: JSON.stringify({ userId: meData.userId }),
+        body: JSON.stringify({ userId: meData.id }),
       });
 
       if (!logoutRes.ok) throw new Error("Logout failed");
 
       setAccessToken(null);
-      toast.success("Logged out successfully!");
+      toast.success(
+        `Logged out successfully. Come back soon ${meData.username}!`
+      );
       navigate("/login");
     } catch (err: any) {
       toast.error(err.message || "Logout failed");
       setAccessToken(null);
-      navigate("/login");
     }
   };
 

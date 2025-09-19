@@ -2,8 +2,8 @@ import { useState, FormEvent } from "react";
 import { useAuth } from "../context/AuthContext";
 import DynamicForm, { FieldConfig } from "../components/DynamicForm";
 
-export default function LoginForm() {
-  const { login } = useAuth();
+export default function SignUpForm() {
+  const { signup } = useAuth();
   const [loading, setLoading] = useState(false);
 
   const [formValues, setFormValues] = useState({
@@ -16,9 +16,9 @@ export default function LoginForm() {
     e.preventDefault();
     setLoading(true);
     try {
-      await login({
-        email: formValues.email || undefined,
-        username: formValues.username || undefined,
+      await signup({
+        email: formValues.email,
+        username: formValues.username,
         password: formValues.password,
       });
     } finally {
@@ -31,14 +31,14 @@ export default function LoginForm() {
       name: "email",
       label: "Email",
       type: "email",
-      optional: true,
+      optional: false,
       placeholder: "Email",
     },
     {
       name: "username",
       label: "Username",
       type: "text",
-      optional: true,
+      optional: false,
       placeholder: "Username",
     },
     {
@@ -58,7 +58,7 @@ export default function LoginForm() {
         setValues={setFormValues}
         onSubmit={handleSubmit}
         loading={loading}
-        submitLabel="Login"
+        submitLabel="Sign Up"
       />
     </div>
   );
