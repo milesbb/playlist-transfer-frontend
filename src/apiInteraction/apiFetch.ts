@@ -1,10 +1,11 @@
 import { toast } from "react-hot-toast";
 
-const API_URL = import.meta.env.API_URL;
+const API_URL = import.meta.env.VITE_API_URL;
 
 export function createApiFetch(
   accessToken: string | null,
-  setAccessToken: (token: string | null) => void
+  setAccessToken: (token: string | null) => void,
+  navigate: (path: string) => void
 ) {
   return async function apiFetch(
     input: RequestInfo,
@@ -20,7 +21,6 @@ export function createApiFetch(
     });
 
     if (res.status === 401) {
-      // Attempt refresh
       const refreshRes = await fetch(`${API_URL}/v1/users/refresh`, {
         method: "POST",
         credentials: "include",
@@ -30,7 +30,6 @@ export function createApiFetch(
         const data: { accessToken: string } = await refreshRes.json();
         setAccessToken(data.accessToken);
 
-        // Retry original request
         res = await fetch(input, {
           ...init,
           headers: {
@@ -40,7 +39,9 @@ export function createApiFetch(
           credentials: "include",
         });
       } else {
-        toast.error("Session expired. Please log in again.");
+        toast.error("Session expired. Redirecting to login...");
+        setAccessToken(null);
+        navigate("/login"); // react-router redirect
         throw new Error("Session expired");
       }
     }

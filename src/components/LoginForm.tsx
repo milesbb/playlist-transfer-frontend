@@ -1,11 +1,13 @@
-import { useState } from "react";
-import type { FormEvent } from "react";
+import { useState, FormEvent } from "react";
 import { useAuth } from "../context/AuthContext";
 import toast from "react-hot-toast";
+import Spinner from "../components/Spinner";
+import FormField from "../components/FormField";
 
 export default function LoginForm() {
   const { login } = useAuth();
   const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -13,7 +15,11 @@ export default function LoginForm() {
     e.preventDefault();
     setLoading(true);
     try {
-      await login(email, password);
+      await login({
+        email: email || undefined,
+        username: username || undefined,
+        password,
+      });
       toast.success("Logged in successfully!");
     } catch (err: any) {
       toast.error(err.message || "Login failed");
@@ -23,41 +29,37 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white shadow-lg rounded-2xl p-8 w-full max-w-md"
-      >
-        <h2 className="text-2xl font-semibold text-center mb-6">Login</h2>
-
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm mb-2">Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
-        </div>
-
-        <div className="mb-6">
-          <label className="block text-gray-700 text-sm mb-2">Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
-        </div>
+    <div className="flex items-center justify-center bg-transparent">
+      <form onSubmit={handleSubmit} className="w-full max-w-md space-y-4">
+        <FormField
+          label="Email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email"
+        />
+        <FormField
+          label="Username"
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          placeholder="Username"
+        />
+        <FormField
+          label="Password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Password"
+          required
+        />
 
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg transition disabled:opacity-50"
+          className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg transition disabled:opacity-50 flex items-center justify-center"
         >
-          {loading ? "Logging in..." : "Login"}
+          {loading ? <Spinner size={20} /> : "Login"}
         </button>
       </form>
     </div>
