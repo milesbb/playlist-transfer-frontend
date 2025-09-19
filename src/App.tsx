@@ -1,20 +1,25 @@
-import "./App.css";
-import animation from "./cropped_landing_page_dog.gif";
-import title from "./title_light.png";
+import { Route, Routes } from "react-router-dom";
+import HomePage from "./pages/HomePage";
+import LoginPage from "./pages/LoginPage";
+import SignUpPage from "./pages/SignUpPage";
+import ProtectedRoute from "./apiInteraction/ProtectedRoute";
+import DashboardPage from "./pages/DashboardPage";
 
 function App() {
   return (
-    <>
-      <div className="flex flex-col justify-center items-center">
-        <img src={animation} alt="Animated GIF" />
-        <img src={title} alt="Title 'Playlist Transfer'" />
-      </div>
-      <div className="card">
-        <button className="mx-2">Log in</button>
-        <button className="mx-2">Sign up</button>
-      </div>
-      <p className="read-the-docs">Backup. Migrate. Share.</p>
-    </>
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<SignUpPage />} />
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <DashboardPage />
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
   );
 }
 
