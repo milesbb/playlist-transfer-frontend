@@ -21,12 +21,20 @@ function Header() {
   return (
     <header className="w-full flex justify-between items-center p-4 bg-[#2a2a2a]">
       <img src={title} alt="Playlist Transfer" className="h-8" />
-      <span
-        className="text-white cursor-pointer hover:underline"
-        onClick={handleLogout}
-      >
-        Logout
-      </span>
+      <div className="mx-2">
+        <span
+          className="text-white cursor-pointer hover:underline"
+          onClick={() => navigate("/profile")}
+        >
+          Profile
+        </span>
+        <span
+          className="text-white cursor-pointer hover:underline"
+          onClick={handleLogout}
+        >
+          Logout
+        </span>
+      </div>
     </header>
   );
 }
