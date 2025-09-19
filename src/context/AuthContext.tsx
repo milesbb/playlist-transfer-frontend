@@ -36,6 +36,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [accessToken, setAccessTokenState] = useState<string | null>(() =>
     sessionStorage.getItem("accessToken")
   );
+  const [userId, setUserId] = useState<number | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -80,6 +81,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         toast.error(data.message);
       } else {
         setAccessToken(data.accessToken);
+        setUserId(data.userId);
         toast.success("Logged in successfully!");
         navigate("/dashboard");
       }
@@ -126,16 +128,24 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         return;
       }
 
-      const meRes = await fetch(`${API_URL}/v1/users/me`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-        credentials: "include",
-      });
+      let userIdToUse = userId;
+      let nameToUse = "music nerd";
 
-      if (!meRes.ok) throw new Error("Failed to fetch user info");
+      if (!userIdToUse) {
+        const meRes = await fetch(`${API_URL}/v1/users/me`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          credentials: "include",
+        });
 
-      const meData: { id: string; username: string } = await meRes.json();
+        if (!meRes.ok) throw new Error("Failed to fetch user info");
+
+        const meData: { id: number; username: string } = await meRes.json();
+
+        userIdToUse = meData.id;
+        nameToUse = meData.username;
+      }
 
       const logoutRes = await fetch(`${API_URL}/v1/users/logout`, {
         method: "POST",
@@ -144,15 +154,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           Authorization: `Bearer ${accessToken}`,
         },
         credentials: "include",
-        body: JSON.stringify({ userId: meData.id }),
+        body: JSON.stringify({ userId: userIdToUse }),
       });
 
       if (!logoutRes.ok) throw new Error("Logout failed");
 
       setAccessToken(null);
-      toast.success(
-        `Logged out successfully. Come back soon ${meData.username}!`
-      );
+      toast.success(`Logged out successfully. Come back soon ${nameToUse}!`);
       navigate("/");
     } catch (err: any) {
       toast.error(err.message || "Logout failed");

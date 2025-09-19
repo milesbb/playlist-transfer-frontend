@@ -1,6 +1,37 @@
 import { toast } from "react-hot-toast";
+import { useAuth } from "../context/AuthContext";
+import { NavigateFunction } from "react-router-dom";
 
 const API_URL = import.meta.env.VITE_API_URL;
+
+const refreshAccessToken = async (): Promise<string | null> => {
+  try {
+    const res = await fetch(`${API_URL}/v1/users/refresh`, {
+      method: "POST",
+      credentials: "include",
+    });
+
+    if (!res.ok) return null;
+
+    const data: { accessToken: string } = await res.json();
+    sessionStorage.setItem("accessToken", data.accessToken);
+
+    return data.accessToken;
+  } catch {
+    return null;
+  }
+};
+
+export const checkAndRefreshTokenOnLanding = async (
+  setAccessToken: (token: string) => void,
+  navigate: NavigateFunction
+) => {
+  const token = await refreshAccessToken();
+  if (token) {
+    setAccessToken(token);
+    navigate("/dashboard");
+  }
+};
 
 export function createApiFetch(
   accessToken: string | null,
@@ -11,41 +42,42 @@ export function createApiFetch(
     input: RequestInfo,
     init?: RequestInit
   ): Promise<Response> {
+    let token = accessToken;
     let res = await fetch(input, {
       ...init,
       headers: {
         ...(init?.headers || {}),
-        Authorization: accessToken ? `Bearer ${accessToken}` : "",
+        Authorization: token ? `Bearer ${token}` : "",
       },
       credentials: "include",
     });
 
     if (res.status === 401) {
-      const refreshRes = await fetch(`${API_URL}/v1/users/refresh`, {
-        method: "POST",
-        credentials: "include",
-      });
+      const body = await res.json();
+      console.log(body);
+      if (body.errorKey == "Unauthorized") {
+        const newAccessToken = await refreshAccessToken();
 
-      if (refreshRes.ok) {
-        const data: { accessToken: string } = await refreshRes.json();
-        setAccessToken(data.accessToken);
+        if (newAccessToken) {
+          setAccessToken(newAccessToken);
+          token = newAccessToken;
 
-        res = await fetch(input, {
-          ...init,
-          headers: {
-            ...(init?.headers || {}),
-            Authorization: `Bearer ${data.accessToken}`,
-          },
-          credentials: "include",
-        });
-      } else {
-        toast.error("Session expired. Redirecting to login...");
-        setAccessToken(null);
-        navigate("/login"); // react-router redirect
-        throw new Error("Session expired");
+          res = await fetch(input, {
+            ...init,
+            headers: {
+              ...(init?.headers || {}),
+              Authorization: `Bearer ${token}`,
+            },
+            credentials: "include",
+          });
+        } else {
+          toast.error("Session expired. Redirecting to login...");
+          setAccessToken(null);
+          navigate("/login");
+          throw new Error("Session expired");
+        }
       }
     }
-
     if (!res.ok) {
       const text = await res.text();
       toast.error(text || "Something went wrong");

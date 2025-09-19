@@ -17,6 +17,7 @@
     "@tailwindcss/vite": "^4.1.13",
     "eslint-plugin-react-dom": "^1.53.1",
     "eslint-plugin-react-x": "^1.53.1",
+    "fs": "^0.0.1-security",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-hot-toast": "^2.6.0",
