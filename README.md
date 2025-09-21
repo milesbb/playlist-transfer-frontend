@@ -8,7 +8,7 @@ This repository contains the **frontend** for the Playlist Transfer website, bui
 
 The project's main goal is to make it easy for people to archive and transfer their music playlists between apps/providers. Down with the walls between music providers!
 
-This is part of a wider full-stack project, [check out the backend here](https://github.com/milesbb/playlist-transfer-backend)!
+This is part of a wider full-stack project, [check out the backend here](https://github.com/milesbb/playlist-transfer-backend) and [check out the python based playlist import/export service here](https://github.com/milesbb/playlist-import-export-service)!
 
 **Currently in early infancy and under construction, come back later!**
 
