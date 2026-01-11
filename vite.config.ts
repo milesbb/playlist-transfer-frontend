@@ -10,7 +10,7 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   base: "./",
   server: {
-    ...(isDev
+    ...(!isDev
       ? {}
       : {
           https: {
