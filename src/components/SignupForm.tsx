@@ -19,6 +19,7 @@ export default function SignUpForm() {
     setLoading(true);
     if (typeof captchaToken !== "string") {
       toast.error("Please complete the captcha.");
+      setLoading(false);
     } else {
       try {
         await signup({

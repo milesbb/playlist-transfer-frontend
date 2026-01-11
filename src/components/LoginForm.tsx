@@ -37,6 +37,7 @@ export default function LoginForm() {
 
     if (typeof captchaToken !== "string") {
       toast.error("Please complete the captcha.");
+      setLoading(false);
     } else {
       try {
         await login({
