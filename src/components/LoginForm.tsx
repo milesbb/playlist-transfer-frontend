@@ -1,7 +1,14 @@
-import { useState, FormEvent } from "react";
+import {
+  useState,
+  FormEvent,
+  useRef,
+  MutableRefObject,
+  RefObject,
+} from "react";
 import { useAuth } from "../context/AuthContext";
 import DynamicForm, { FieldConfig } from "../components/DynamicForm";
 import { toast } from "react-hot-toast";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 
 const emailOptions: FieldConfig = {
   name: "email",
@@ -30,6 +37,7 @@ export default function LoginForm() {
     password: "",
   });
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const captchaRef: RefObject<HCaptcha | null> = useRef(null);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -40,12 +48,16 @@ export default function LoginForm() {
       setLoading(false);
     } else {
       try {
-        await login({
-          email: useEmail ? formValues.email || undefined : undefined,
-          username: !useEmail ? formValues.username || undefined : undefined,
-          password: formValues.password,
-          captchaToken,
-        });
+        await login(
+          {
+            email: useEmail ? formValues.email || undefined : undefined,
+            username: !useEmail ? formValues.username || undefined : undefined,
+            password: formValues.password,
+            captchaToken,
+          },
+          captchaRef,
+          setCaptchaToken
+        );
       } finally {
         setLoading(false);
       }
@@ -101,6 +113,7 @@ export default function LoginForm() {
         setValues={setFormValues}
         setCaptchaToken={setCaptchaToken}
         onSubmit={handleSubmit}
+        captchaRef={captchaRef}
         loading={loading}
         submitLabel="Login"
       />

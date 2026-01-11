@@ -4,26 +4,37 @@ import {
   useState,
   useEffect,
   ReactNode,
+  Ref,
+  RefObject,
 } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 interface AuthContextType {
   accessToken: string | null;
-  login: (credentials: {
-    email?: string;
-    username?: string;
-    password: string;
-    captchaToken: string;
-  }) => Promise<void>;
-  signup: (data: {
-    username: string;
-    email: string;
-    password: string;
-    captchaToken: string;
-  }) => Promise<void>;
+  login: (
+    credentials: {
+      email?: string;
+      username?: string;
+      password: string;
+      captchaToken: string;
+    },
+    captchaRef: RefObject<HCaptcha | null>,
+    setCaptchaToken: React.Dispatch<React.SetStateAction<string | null>>
+  ) => Promise<void>;
+  signup: (
+    data: {
+      username: string;
+      email: string;
+      password: string;
+      captchaToken: string;
+    },
+    captchaRef: RefObject<HCaptcha | null>,
+    setCaptchaToken: React.Dispatch<React.SetStateAction<string | null>>
+  ) => Promise<void>;
   logout: () => Promise<void>;
   setAccessToken: (token: string | null) => void;
 }
@@ -33,6 +44,16 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 interface AuthProviderProps {
   children: ReactNode;
 }
+
+const resetCaptcha = (
+  setCaptchaToken: React.Dispatch<React.SetStateAction<string | null>>,
+  captchaRef: RefObject<HCaptcha | null>
+) => {
+  if (captchaRef && captchaRef.current) {
+    captchaRef.current.resetCaptcha();
+  }
+  setCaptchaToken(null);
+};
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [accessToken, setAccessTokenState] = useState<string | null>(() =>
@@ -53,17 +74,21 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setAccessTokenState(token);
   };
 
-  const login = async ({
-    email,
-    username,
-    password,
-    captchaToken,
-  }: {
-    email?: string;
-    username?: string;
-    password: string;
-    captchaToken: string;
-  }) => {
+  const login = async (
+    {
+      email,
+      username,
+      password,
+      captchaToken,
+    }: {
+      email?: string;
+      username?: string;
+      password: string;
+      captchaToken: string;
+    },
+    captchaRef: RefObject<HCaptcha | null>,
+    setCaptchaToken: React.Dispatch<React.SetStateAction<string | null>>
+  ) => {
     try {
       const emailToSend = email == "" ? undefined : email;
       const usernameToSend = username == "" ? undefined : username;
@@ -84,6 +109,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (!res.ok) {
         console.log(data);
         toast.error(data.message);
+        resetCaptcha(setCaptchaToken, captchaRef);
       } else {
         setAccessToken(data.accessToken);
         setUserId(data.userId);
@@ -92,21 +118,26 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
     } catch (err: any) {
       toast.error(err.message || "Login failed");
+      resetCaptcha(setCaptchaToken, captchaRef);
       throw err;
     }
   };
 
-  const signup = async ({
-    username,
-    email,
-    password,
-    captchaToken,
-  }: {
-    username: string;
-    email: string;
-    password: string;
-    captchaToken: string;
-  }) => {
+  const signup = async (
+    {
+      username,
+      email,
+      password,
+      captchaToken,
+    }: {
+      username: string;
+      email: string;
+      password: string;
+      captchaToken: string;
+    },
+    captchaRef: RefObject<HCaptcha | null>,
+    setCaptchaToken: React.Dispatch<React.SetStateAction<string | null>>
+  ) => {
     try {
       const res = await fetch(`${API_URL}/v1/users/signup`, {
         method: "POST",
@@ -115,7 +146,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         body: JSON.stringify({ username, email, password, captchaToken }),
       });
 
-      if (!res.ok) throw new Error("Signup failed");
+      if (!res.ok) {
+        resetCaptcha(setCaptchaToken, captchaRef);
+        throw new Error("Signup failed");
+      }
 
       const data: { accessToken: string } = await res.json();
       setAccessToken(data.accessToken);
@@ -124,6 +158,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       navigate("/dashboard");
     } catch (err: any) {
       toast.error(err.message || "Signup failed");
+      resetCaptcha(setCaptchaToken, captchaRef);
       throw err;
     }
   };

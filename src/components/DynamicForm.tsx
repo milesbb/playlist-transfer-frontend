@@ -1,4 +1,4 @@
-import React, { FormEvent } from "react";
+import React, { FormEvent, Ref } from "react";
 import Spinner from "./Spinner";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 
@@ -16,6 +16,7 @@ interface DynamicFormProps<T> {
   setValues: React.Dispatch<React.SetStateAction<T>>;
   setCaptchaToken: React.Dispatch<React.SetStateAction<string | null>>;
   onSubmit: (e: FormEvent) => void;
+  captchaRef: Ref<HCaptcha>;
   loading?: boolean;
   submitLabel?: string;
 }
@@ -28,6 +29,7 @@ export default function DynamicForm<T>({
   setValues,
   setCaptchaToken,
   onSubmit,
+  captchaRef,
   loading = false,
   submitLabel = "Submit",
 }: DynamicFormProps<T>) {
@@ -54,6 +56,7 @@ export default function DynamicForm<T>({
       <HCaptcha
         sitekey={CAPTCHA_SITE_KEY}
         onVerify={(token) => setCaptchaToken(token)}
+        ref={captchaRef}
       />
 
       <button
