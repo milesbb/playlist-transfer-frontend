@@ -16,11 +16,13 @@ interface AuthContextType {
     email?: string;
     username?: string;
     password: string;
+    captchaToken: string;
   }) => Promise<void>;
   signup: (data: {
     username: string;
     email: string;
     password: string;
+    captchaToken: string;
   }) => Promise<void>;
   logout: () => Promise<void>;
   setAccessToken: (token: string | null) => void;
@@ -55,10 +57,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     email,
     username,
     password,
+    captchaToken,
   }: {
     email?: string;
     username?: string;
     password: string;
+    captchaToken: string;
   }) => {
     try {
       const emailToSend = email == "" ? undefined : email;
@@ -71,6 +75,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           email: emailToSend,
           username: usernameToSend,
           password,
+          captchaToken,
         }),
       });
 
@@ -95,17 +100,19 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     username,
     email,
     password,
+    captchaToken,
   }: {
     username: string;
     email: string;
     password: string;
+    captchaToken: string;
   }) => {
     try {
       const res = await fetch(`${API_URL}/v1/users/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ username, email, password }),
+        body: JSON.stringify({ username, email, password, captchaToken }),
       });
 
       if (!res.ok) throw new Error("Signup failed");

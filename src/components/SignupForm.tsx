@@ -1,6 +1,7 @@
 import { useState, FormEvent } from "react";
 import { useAuth } from "../context/AuthContext";
 import DynamicForm, { FieldConfig } from "../components/DynamicForm";
+import { toast } from "react-hot-toast";
 
 export default function SignUpForm() {
   const { signup } = useAuth();
@@ -11,18 +12,24 @@ export default function SignUpForm() {
     username: "",
     password: "",
   });
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    try {
-      await signup({
-        email: formValues.email,
-        username: formValues.username,
-        password: formValues.password,
-      });
-    } finally {
-      setLoading(false);
+    if (typeof captchaToken !== "string") {
+      toast.error("Please complete the captcha.");
+    } else {
+      try {
+        await signup({
+          email: formValues.email,
+          username: formValues.username,
+          password: formValues.password,
+          captchaToken,
+        });
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -56,6 +63,7 @@ export default function SignUpForm() {
         fields={fields}
         values={formValues}
         setValues={setFormValues}
+        setCaptchaToken={setCaptchaToken}
         onSubmit={handleSubmit}
         loading={loading}
         submitLabel="Sign Up"

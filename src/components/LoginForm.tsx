@@ -1,6 +1,7 @@
 import { useState, FormEvent } from "react";
 import { useAuth } from "../context/AuthContext";
 import DynamicForm, { FieldConfig } from "../components/DynamicForm";
+import { toast } from "react-hot-toast";
 
 const emailOptions: FieldConfig = {
   name: "email",
@@ -20,26 +21,33 @@ const usernameOptions: FieldConfig = {
 
 export default function LoginForm() {
   const { login } = useAuth();
-  const [loading, setLoading] = useState(false);
-  const [useEmail, setUseEmail] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [useEmail, setUseEmail] = useState<boolean>(false);
 
   const [formValues, setFormValues] = useState({
     email: "",
     username: "",
     password: "",
   });
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    try {
-      await login({
-        email: useEmail ? formValues.email || undefined : undefined,
-        username: !useEmail ? formValues.username || undefined : undefined,
-        password: formValues.password,
-      });
-    } finally {
-      setLoading(false);
+
+    if (typeof captchaToken !== "string") {
+      toast.error("Please complete the captcha.");
+    } else {
+      try {
+        await login({
+          email: useEmail ? formValues.email || undefined : undefined,
+          username: !useEmail ? formValues.username || undefined : undefined,
+          password: formValues.password,
+          captchaToken,
+        });
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -90,6 +98,7 @@ export default function LoginForm() {
         fields={fields}
         values={formValues}
         setValues={setFormValues}
+        setCaptchaToken={setCaptchaToken}
         onSubmit={handleSubmit}
         loading={loading}
         submitLabel="Login"

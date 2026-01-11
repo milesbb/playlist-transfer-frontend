@@ -1,5 +1,6 @@
 import React, { FormEvent } from "react";
 import Spinner from "./Spinner";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 
 export interface FieldConfig {
   name: string; // field key
@@ -13,15 +14,19 @@ interface DynamicFormProps<T> {
   fields: FieldConfig[];
   values: T;
   setValues: React.Dispatch<React.SetStateAction<T>>;
+  setCaptchaToken: React.Dispatch<React.SetStateAction<string | null>>;
   onSubmit: (e: FormEvent) => void;
   loading?: boolean;
   submitLabel?: string;
 }
 
+const CAPTCHA_SITE_KEY = import.meta.env.VITE_CAPTCHA_SITE_KEY;
+
 export default function DynamicForm<T>({
   fields,
   values,
   setValues,
+  setCaptchaToken,
   onSubmit,
   loading = false,
   submitLabel = "Submit",
@@ -45,6 +50,11 @@ export default function DynamicForm<T>({
           />
         </div>
       ))}
+
+      <HCaptcha
+        sitekey={CAPTCHA_SITE_KEY}
+        onVerify={(token) => setCaptchaToken(token)}
+      />
 
       <button
         type="submit"
