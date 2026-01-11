@@ -9,9 +9,7 @@ function DashboardPage() {
         <div className="flex flex-col justify-center items-center">
           <h1 className="text-white text-2xl">Dashboard</h1>
         </div>
-        <div className="p-2">
-          <button className="mx-2">Get details</button>
-        </div>
+        <div className="p-2"></div>
       </div>
     </div>
   );
