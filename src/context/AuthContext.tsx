@@ -157,12 +157,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         body: JSON.stringify({ userId: userIdToUse }),
       });
 
-      if (!logoutRes.ok) throw new Error("Logout failed");
+      if (!logoutRes.ok && logoutRes.status !== 401)
+        throw new Error("Logout failed");
 
       setAccessToken(null);
       toast.success(`Logged out successfully. Come back soon ${nameToUse}!`);
       navigate("/");
     } catch (err: any) {
+      console.log();
       toast.error(err.message || "Logout failed");
       setAccessToken(null);
     }
