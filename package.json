@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "vite",
     "clean": "rm -rf dist",
-    "build": "echo $ENV && tsc -b && vite build",
+    "build": "echo \"environment: $ENV\" && tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build",
