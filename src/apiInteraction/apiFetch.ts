@@ -1,5 +1,4 @@
 import { toast } from "react-hot-toast";
-import { useAuth } from "../context/AuthContext";
 import { NavigateFunction } from "react-router-dom";
 
 const API_URL = import.meta.env.VITE_API_URL;

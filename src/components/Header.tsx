@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { FormEvent, useState } from "react";
 import title from "../assets/title_light.png";
 import { useAuth } from "../context/AuthContext";
+import Spinner from "./Spinner";
 
 function Header() {
   const { logout } = useAuth();
@@ -20,8 +21,19 @@ function Header() {
 
   return (
     <header className="w-full flex justify-between items-center p-4 bg-[#2a2a2a]">
-      <img src={title} alt="Playlist Transfer" className="h-8" />
+      <img
+        src={title}
+        alt="Playlist Transfer"
+        className="h-8 cursor-pointer"
+        onClick={() => navigate("/dashboard")}
+      />
       <div className="flex items-center space-x-4 mx-2">
+        <span
+          className="text-white cursor-pointer hover:underline"
+          onClick={() => navigate("/dashboard")}
+        >
+          Dashboard
+        </span>
         <span
           className="text-white cursor-pointer hover:underline"
           onClick={() => navigate("/profile")}
@@ -32,7 +44,7 @@ function Header() {
           className="text-white cursor-pointer hover:underline"
           onClick={handleLogout}
         >
-          Logout
+          {loading ? <Spinner size={20} /> : "Logout"}
         </span>
       </div>
     </header>

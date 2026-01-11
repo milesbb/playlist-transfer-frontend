@@ -1,4 +1,5 @@
 import { defineConfig } from "vite";
+// @ts-expect-error TS2307
 import fs from "fs";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
