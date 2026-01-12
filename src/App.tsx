@@ -22,7 +22,7 @@ function App() {
     const refresh = async () => {
       setLoading(true);
       try {
-        checkAndRefreshTokenOnLanding(setAccessToken, navigate);
+        await checkAndRefreshTokenOnLanding(setAccessToken, navigate);
       } finally {
         setLoading(false);
       }
