@@ -9,7 +9,7 @@ function ProfilePage() {
     <div className="dashboard-container flex flex-col min-h-screen">
       <Header />
       <div className="flex flex-col items-center justify-center flex-grow">
-        {isBeta ? (
+        {!isBeta ? (
           <BetaDog />
         ) : (
           <>
