@@ -15,7 +15,7 @@ function App() {
   useBetaFlagFromQuery();
   const navigate = useNavigate();
   const { setAccessToken } = useAuth();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setLoading(true);
