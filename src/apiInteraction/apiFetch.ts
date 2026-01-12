@@ -24,10 +24,8 @@ const refreshAccessToken = async (): Promise<string | null> => {
 
 export const checkAndRefreshTokenOnLanding = async (
   setAccessToken: (token: string) => void,
-  navigate: NavigateFunction,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>
+  navigate: NavigateFunction
 ) => {
-  setLoading(true);
   const token = await refreshAccessToken();
   if (token) {
     setAccessToken(token);

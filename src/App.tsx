@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
 import ProfilePage from "./pages/ProfilePage";
 import useBetaFlagFromQuery from "./utils/checkIfBeta";
+import Spinner from "./components/Spinner";
 
 function App() {
   useBetaFlagFromQuery();
@@ -18,18 +19,27 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    try {
-      checkAndRefreshTokenOnLanding(setAccessToken, navigate, setLoading);
-    } finally {
-      setLoading(false);
-    }
+    const refresh = async () => {
+      setLoading(true);
+      try {
+        checkAndRefreshTokenOnLanding(setAccessToken, navigate);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    refresh();
   }, []);
+
+  if (loading) {
+    return <Spinner fullscreen />;
+  }
 
   return (
     <Routes>
-      <Route path="/" element={<HomePage loadingRefresh={loading} />} />
-      <Route path="/login" element={<LoginPage loadingRefresh={loading} />} />
-      <Route path="/signup" element={<SignUpPage loadingRefresh={loading} />} />
+      <Route path="/" element={<HomePage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<SignUpPage />} />
       <Route
         path="/dashboard"
         element={
