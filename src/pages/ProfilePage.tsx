@@ -9,14 +9,14 @@ function ProfilePage() {
   const isBeta = checkIfBeta();
   return (
     <div className="dashboard-container flex flex-col min-h-screen">
-      <Header />
+      <Header location="Profile" />
       <div className="flex flex-col items-center justify-center flex-grow">
         {!isBeta ? (
           <BetaDog />
         ) : (
           <>
             <div className="text-white max-w-3xl mx-auto px-6 py-10">
-              <h1 className="text-3xl font-bold mb-8">Profile</h1>
+              <h1 className="text-3xl font-bold mb-8">Settings</h1>
               <ThirdPartySettings />
               <AccountSettings />
             </div>
