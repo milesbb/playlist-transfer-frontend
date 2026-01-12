@@ -9,8 +9,10 @@ import { checkAndRefreshTokenOnLanding } from "./apiInteraction/apiFetch";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
 import ProfilePage from "./pages/ProfilePage";
+import useBetaFlagFromQuery from "./utils/checkIfBeta";
 
 function App() {
+  useBetaFlagFromQuery();
   const navigate = useNavigate();
   const { setAccessToken } = useAuth();
   const [loading, setLoading] = useState(false);
