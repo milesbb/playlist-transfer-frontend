@@ -1,3 +1,4 @@
+import React from "react";
 import { toast } from "react-hot-toast";
 import { NavigateFunction } from "react-router-dom";
 
@@ -23,8 +24,10 @@ const refreshAccessToken = async (): Promise<string | null> => {
 
 export const checkAndRefreshTokenOnLanding = async (
   setAccessToken: (token: string) => void,
-  navigate: NavigateFunction
+  navigate: NavigateFunction,
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
+  setLoading(true);
   const token = await refreshAccessToken();
   if (token) {
     setAccessToken(token);

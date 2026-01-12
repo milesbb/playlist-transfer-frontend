@@ -18,9 +18,8 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(true);
     try {
-      checkAndRefreshTokenOnLanding(setAccessToken, navigate);
+      checkAndRefreshTokenOnLanding(setAccessToken, navigate, setLoading);
     } finally {
       setLoading(false);
     }
