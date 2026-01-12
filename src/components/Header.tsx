@@ -25,7 +25,7 @@ function Header({ location }: HeaderProps) {
 
   return (
     <header className="w-full flex justify-between items-center p-4 bg-[#2a2a2a]">
-      <div>
+      <div className="flex items-center gap-3">
         <img
           src={title}
           alt="Playlist Transfer"
@@ -39,7 +39,7 @@ function Header({ location }: HeaderProps) {
           className="text-white cursor-pointer hover:underline"
           onClick={() => navigate("/dashboard")}
         >
-          Dashboard
+          Playlists
         </span>
         <span
           className="text-white cursor-pointer hover:underline"
