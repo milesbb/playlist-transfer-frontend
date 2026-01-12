@@ -2,6 +2,8 @@ import "./ProfilePage.css";
 import Header from "../components/Header";
 import { checkIfBeta } from "../utils/checkIfBeta";
 import BetaDog from "./BetaDog";
+import AccountSettings from "../components/AccountSettings";
+import ThirdPartySettings from "../components/ThirdPartySettings";
 
 function ProfilePage() {
   const isBeta = checkIfBeta();
@@ -13,11 +15,10 @@ function ProfilePage() {
           <BetaDog />
         ) : (
           <>
-            <div className="flex flex-col justify-center items-center">
-              <h1 className="text-white text-2xl">Profile</h1>
-            </div>
-            <div className="p-2">
-              <button className="mx-2">Get details</button>
+            <div className="text-white max-w-3xl mx-auto px-6 py-10">
+              <h1 className="text-3xl font-bold mb-8">Profile</h1>
+              <ThirdPartySettings />
+              <AccountSettings />
             </div>
           </>
         )}
