@@ -9,6 +9,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
+import { getRandomWelcomeMessage } from "../utils/randomMessageSelector";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -112,7 +113,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       } else {
         setAccessToken(data.accessToken);
         setUserId(data.userId);
-        toast.success("Logged in successfully!");
+        toast.success(getRandomWelcomeMessage());
         navigate("/dashboard");
       }
     } catch (err: any) {
@@ -154,6 +155,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setAccessToken(data.accessToken);
 
       toast.success("Signup successful!");
+      toast.success(getRandomWelcomeMessage());
       navigate("/dashboard");
     } catch (err: any) {
       toast.error(err.message || "Signup failed");
