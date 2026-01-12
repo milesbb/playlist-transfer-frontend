@@ -2,15 +2,26 @@ import "./SignUpPage.css";
 import title from "../assets/title_light.png";
 import SignUpForm from "../components/SignupForm";
 import BackArrow from "../components/BackArrow";
+import Spinner from "../components/Spinner";
 
-function SignUpPage() {
+type SignUpPageProps = {
+  loadingRefresh: boolean;
+};
+
+function SignUpPage({ loadingRefresh }: SignUpPageProps) {
   return (
     <>
-      <div className="flex flex-col items-center justify-center h-screen ">
-        <BackArrow />
-        <img className="flex" src={title} alt="Title 'Playlist Transfer'" />
-        <SignUpForm />
-      </div>
+      {loadingRefresh ? (
+        <Spinner fullscreen />
+      ) : (
+        <>
+          <div className="flex flex-col items-center justify-center h-screen ">
+            <BackArrow />
+            <img className="flex" src={title} alt="Title 'Playlist Transfer'" />
+            <SignUpForm />
+          </div>
+        </>
+      )}
     </>
   );
 }

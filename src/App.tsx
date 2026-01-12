@@ -29,8 +29,8 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<HomePage loadingRefresh={loading} />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/signup" element={<SignUpPage />} />
+      <Route path="/login" element={<LoginPage loadingRefresh={loading} />} />
+      <Route path="/signup" element={<SignUpPage loadingRefresh={loading} />} />
       <Route
         path="/dashboard"
         element={
